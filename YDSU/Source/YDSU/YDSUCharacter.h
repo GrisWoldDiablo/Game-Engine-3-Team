@@ -24,35 +24,6 @@ public:
 	/** Returns CursorToWorld subobject **/
 	FORCEINLINE class UDecalComponent* GetCursorToWorld() { return CursorToWorld; }
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamTolerance;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float ValueTolerance;
-
-private:
-	float AxisValueF;
-	float AxisValueR;
-	FVector DirectionForward;
-	FVector DirectionRight;
-	bool ChangeCamera;
-
-protected:
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for side to side input */
-	void MoveRight(float Value);
-
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// End of APawn interface
-
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-
-	FRotator CameraRotator;
-	float CameraLenght;
-	bool DetachCam;
-	float NewCamLagDistance;
-
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -66,5 +37,4 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
-	void CameraReposition(float DeltaTime);
 };
