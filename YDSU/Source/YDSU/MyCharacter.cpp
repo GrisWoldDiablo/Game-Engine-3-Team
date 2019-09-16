@@ -55,7 +55,10 @@ AMyCharacter::AMyCharacter()
 	ChangeCamera = true;
 	CameraRotator = FRotator(CameraBoom->RelativeRotation.Pitch, CameraBoom->RelativeRotation.Yaw, 0.0f);
 	CameraLenght = CameraBoom->TargetArmLength;
-	NewCamLagDistance = CameraBoom->CameraLagMaxDistance;
+	CameraBoom->bEnableCameraLag = true;
+	NewCamLagDistance = CameraBoom->CameraLagMaxDistance = 200.0f;
+	CameraBoom->CameraLagSpeed = 1.0f;
+
 
 }
 
@@ -140,7 +143,7 @@ void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
 	{
 		// DEBUG
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Touching Trigger Box");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Touching Trigger Box");
 		ACameraTriggerBox* CamTrigBox = Cast<ACameraTriggerBox>(OtherActor);
 		if (CamTrigBox != nullptr)
 		{
