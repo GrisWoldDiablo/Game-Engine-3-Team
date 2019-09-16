@@ -143,7 +143,7 @@ void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
 	{
 		// DEBUG
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Touching Trigger Box");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Touching Trigger Box");
 		ACameraTriggerBox* CamTrigBox = Cast<ACameraTriggerBox>(OtherActor);
 		if (CamTrigBox != nullptr)
 		{
