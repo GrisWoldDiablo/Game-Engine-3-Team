@@ -22,10 +22,16 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamTolerance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float ValueTolerance;
+
+	//UFUNCTION(BlueprintCallable, Category = "Test") void CopyCamValues(AMyCharacter* TheCharacter);
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") FRotator CameraRotator;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CameraLenght;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagDistance;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagSpeed;
 
 private:
 	float AxisValueF;
@@ -47,10 +53,8 @@ protected:
 	// Detect collisions
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-	FRotator CameraRotator;
-	float CameraLenght;
-	bool DetachCam;
-	float NewCamLagDistance;
+	//bool DetachCam;
+	
 
 public:	
 	// Called to bind functionality to input
