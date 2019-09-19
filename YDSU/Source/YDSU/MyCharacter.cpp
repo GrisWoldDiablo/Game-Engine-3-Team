@@ -50,13 +50,13 @@ AMyCharacter::AMyCharacter()
 
 	// Default camera repositioning values
 	CamSpeed = 2.5f;
-	CamTolerance = 1.0f;
+	CamTolerance = 0.5f;
 	ValueTolerance = 0.2f;
 	ChangeCamera = true;
 	CameraRotator = FRotator(CameraBoom->RelativeRotation.Pitch, CameraBoom->RelativeRotation.Yaw, 0.0f);
 	CameraLenght = CameraBoom->TargetArmLength;
 	CameraBoom->bEnableCameraLag = true;
-	NewCamLagDistance = CameraBoom->CameraLagMaxDistance = 200.0f;
+	CamLagDistance = CameraBoom->CameraLagMaxDistance = 200.0f;
 	CameraBoom->CameraLagSpeed = 1.0f;
 
 
@@ -79,6 +79,17 @@ void AMyCharacter::Tick(float DeltaTime)
 		CameraReposition(DeltaTime);
 	}
 }
+
+//UFUNCTION(BlueprintCallable) void AMyCharacter::CopyCamValues(AMyCharacter* TheCharacter)
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamRot: " + TheCharacter->GetName());
+//	/*
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLenght: " + FString::FromInt(CamLenght));
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLagDist: " + FString::FromInt(CamLagDistance));
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLagSpeed: " + FString::FromInt(CamLagSpeed));*/
+//
+//	return UFUNCTION(BlueprintCallable) void();
+//}
 
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -153,8 +164,8 @@ void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, CameraRotator.ToString());
 
 			//DetachCam = CamTrigBox->DetachCam;
-			CameraBoom->CameraLagSpeed = CamTrigBox->CamLagSpeed;
-			NewCamLagDistance = CamTrigBox->CamLagDistance;
+			CamLagSpeed = CameraBoom->CameraLagSpeed = CamTrigBox->CamLagSpeed;
+			CamLagDistance = CamTrigBox->CamLagDistance;
 		}
 	}
 }
@@ -166,13 +177,18 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 	// Lerping Camera position
 	CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, CameraLenght, DeltaTime, CamSpeed);
 	// Lerping Camera follow distance
-	CameraBoom->CameraLagMaxDistance = FMath::FInterpTo(CameraBoom->CameraLagMaxDistance, NewCamLagDistance, DeltaTime, CamSpeed);
+	CameraBoom->CameraLagMaxDistance = FMath::FInterpTo(CameraBoom->CameraLagMaxDistance, CamLagDistance, DeltaTime, CamSpeed);
 
 	// Stop lerping if camera position is close enough
 	if (CameraBoom->GetTargetRotation().Equals(CameraRotator, CamTolerance) &&
 		FMath::IsNearlyEqual(CameraBoom->TargetArmLength, CameraLenght, CamTolerance) &&
-		FMath::IsNearlyEqual(CameraBoom->CameraLagMaxDistance, NewCamLagDistance, CamTolerance))
+		FMath::IsNearlyEqual(CameraBoom->CameraLagMaxDistance, CamLagDistance, CamTolerance))
 	{
+		// DEBUG
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "CamZeroed");
+		CameraBoom->SetWorldRotation(CameraRotator);
+		CameraBoom->TargetArmLength = CameraLenght;
+		CameraBoom->CameraLagMaxDistance = CamLagDistance;
 		ChangeCamera = false;
 	}
 }
