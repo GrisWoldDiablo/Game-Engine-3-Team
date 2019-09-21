@@ -185,7 +185,7 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 		FMath::IsNearlyEqual(CameraBoom->CameraLagMaxDistance, CamLagDistance, CamTolerance))
 	{
 		// DEBUG
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "CamZeroed");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "CamZeroed");
 		CameraBoom->SetWorldRotation(CameraRotator);
 		CameraBoom->TargetArmLength = CameraLenght;
 		CameraBoom->CameraLagMaxDistance = CamLagDistance;
