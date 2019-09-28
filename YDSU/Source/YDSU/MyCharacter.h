@@ -48,16 +48,21 @@ protected:
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
+
 	/** Called for side to side input */
 	void MoveRight(float Value);
+
 
 	// Detect collisions
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	//bool DetachCam;
-	
+	UFUNCTION(BlueprintPure, Category = "Custom")
+		FVector GetDirectionForward(float AxisValue);
+	UFUNCTION(BlueprintPure, Category = "Custom")
+		FVector GetDirectionRight(float AxisValue);
 
-public:	
+public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
