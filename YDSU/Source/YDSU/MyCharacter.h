@@ -32,6 +32,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CameraLenght;
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagDistance;
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagSpeed;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool Locked;
 
 private:
 	float AxisValueF;

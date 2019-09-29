@@ -58,6 +58,7 @@ AMyCharacter::AMyCharacter()
 	CameraBoom->bEnableCameraLag = true;
 	CamLagDistance = CameraBoom->CameraLagMaxDistance = 200.0f;
 	CameraBoom->CameraLagSpeed = 1.0f;
+	Locked = false;
 
 
 }
@@ -132,20 +133,27 @@ void AMyCharacter::MoveRight(float Value)
 {
 	if ((Controller != NULL))
 	{
-		// find out which way is right
-		const FRotator Rotation = CameraBoom->GetTargetRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-
-		// get right vector updated if player moved controller axis
-		if (!FMath::IsNearlyEqual(Value, AxisValueR, ValueTolerance))
+		if (!Locked)
 		{
-			AxisValueR = Value;
-			DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			// find out which way is right
+			const FRotator Rotation = CameraBoom->GetTargetRotation();
+			const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+
+			// get right vector updated if player moved controller axis
+			if (!FMath::IsNearlyEqual(Value, AxisValueR, ValueTolerance))
+			{
+				AxisValueR = Value;
+				DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+				DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+			}
+			// add movement in that direction
+			AddMovementInput(DirectionRight, Value);
 		}
-		// add movement in that direction
-		AddMovementInput(DirectionRight, Value);
+		else
+		{
+			AddMovementInput(this->RootComponent->GetRightVector(), Value);			
+		}
 	}
 }
 
@@ -185,7 +193,7 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 		FMath::IsNearlyEqual(CameraBoom->CameraLagMaxDistance, CamLagDistance, CamTolerance))
 	{
 		// DEBUG
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "CamZeroed");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "CamZeroed");
 		CameraBoom->SetWorldRotation(CameraRotator);
 		CameraBoom->TargetArmLength = CameraLenght;
 		CameraBoom->CameraLagMaxDistance = CamLagDistance;
