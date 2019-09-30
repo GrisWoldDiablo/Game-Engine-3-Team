@@ -171,6 +171,12 @@ FVector AMyCharacter::GetDirectionRight(float Value)
 
 void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
+	Super::NotifyActorBeginOverlap(OtherActor);
+	CamBoxOverLap(OtherActor);
+}
+
+void AMyCharacter::CamBoxOverLap(AActor* OtherActor)
+{
 	if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
 	{
 		// DEBUG

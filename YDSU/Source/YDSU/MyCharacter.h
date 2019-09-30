@@ -56,6 +56,7 @@ protected:
 	// Detect collisions
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+
 	//bool DetachCam;
 	UFUNCTION(BlueprintPure, Category = "Custom")
 		FVector GetDirectionForward(float AxisValue);
@@ -64,6 +65,8 @@ protected:
 
 public:
 	// Called to bind functionality to input
+	//UFUNCTION(BlueprintCallable, Category = "Custom")
+		void CamBoxOverLap(AActor* OtherActor);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
