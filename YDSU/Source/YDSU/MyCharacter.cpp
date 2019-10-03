@@ -14,7 +14,7 @@
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set size for player capsule
@@ -67,7 +67,7 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -113,51 +113,69 @@ void AMyCharacter::MoveForward(float Value)
 	if ((Controller != NULL))
 	{
 		// find out which way is forward
-		const FRotator Rotation = CameraBoom->GetTargetRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		
 
 		// get forward vector updated if player moved controller axis
-		if (!FMath::IsNearlyEqual(Value, AxisValueF, ValueTolerance))
-		{
-			AxisValueF = Value;
-			DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		}
+		//GetDirectionForward(Value, YawRotation);
 
 		// add movement in that direction
-		AddMovementInput(DirectionForward, Value);
+		AddMovementInput(GetDirectionForward(Value), Value);
 	}
+}
+
+FVector AMyCharacter::GetDirectionForward(float Value)
+{
+	const FRotator Rotation = CameraBoom->GetTargetRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	if (!FMath::IsNearlyEqual(Value, AxisValueF, ValueTolerance))
+	{
+		AxisValueF = Value;
+		DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	}
+	return DirectionForward;
 }
 
 void AMyCharacter::MoveRight(float Value)
 {
+
 	if ((Controller != NULL))
 	{
-		if (!Locked)
-		{
+		// DEBUG
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, "move Right!");
+
 			// find out which way is right
-			const FRotator Rotation = CameraBoom->GetTargetRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
+		
 
 
-			// get right vector updated if player moved controller axis
-			if (!FMath::IsNearlyEqual(Value, AxisValueR, ValueTolerance))
-			{
-				AxisValueR = Value;
-				DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-				DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			}
-			// add movement in that direction
-			AddMovementInput(DirectionRight, Value);
-		}
-		else
-		{
-			AddMovementInput(this->RootComponent->GetRightVector(), Value);			
-		}
+		// get right vector updated if player moved controller axis
+		//GetDirectionRight(Value, YawRotation);
+		// add movement in that direction
+		AddMovementInput(GetDirectionRight(Value), Value);
+
 	}
 }
 
+FVector AMyCharacter::GetDirectionRight(float Value)
+{
+	const FRotator Rotation = CameraBoom->GetTargetRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	if (!FMath::IsNearlyEqual(Value, AxisValueR, ValueTolerance))
+	{
+		AxisValueR = Value;
+		DirectionRight = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		DirectionForward = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	}
+	return DirectionRight;
+}
+
 void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	CamBoxOverLap(OtherActor);
+}
+
+void AMyCharacter::CamBoxOverLap(AActor* OtherActor)
 {
 	if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
 	{
