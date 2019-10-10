@@ -22,10 +22,17 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float CamTolerance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float ValueTolerance;
+
+	//UFUNCTION(BlueprintCallable, Category = "Test") void CopyCamValues(AMyCharacter* TheCharacter);
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") FRotator CameraRotator;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CameraLenght;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagDistance;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagSpeed;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool Locked;
 
 private:
 	float AxisValueF;
@@ -41,19 +48,25 @@ protected:
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
+
 	/** Called for side to side input */
 	void MoveRight(float Value);
+
 
 	// Detect collisions
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-	FRotator CameraRotator;
-	float CameraLenght;
-	bool DetachCam;
-	float NewCamLagDistance;
 
-public:	
+	//bool DetachCam;
+	UFUNCTION(BlueprintPure, Category = "Custom")
+		FVector GetDirectionForward(float AxisValue);
+	UFUNCTION(BlueprintPure, Category = "Custom")
+		FVector GetDirectionRight(float AxisValue);
+
+public:
 	// Called to bind functionality to input
+	//UFUNCTION(BlueprintCallable, Category = "Custom")
+		void CamBoxOverLap(AActor* OtherActor);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:

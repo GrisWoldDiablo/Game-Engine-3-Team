@@ -49,4 +49,5 @@ void ACameraTriggerBox::OnConstruction(const FTransform& Transform)
 	CamView->SetRelativeLocation(CamViewLoc);
 	FRotator originRotation(Pitch, Yaw, 0.0f);
 	Origin->SetRelativeRotation(originRotation);
+	Label->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 }
