@@ -18,7 +18,7 @@ public:
 	ACameraTriggerBox(); // Constructor
 	// Gizmos
 	UPROPERTY(VisibleAnywhere) class UTextRenderComponent* Label;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh) UStaticMeshComponent* Origin;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh) USceneComponent* Origin;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Camera) class UCameraComponent* CamView;
 
 	// Properties
