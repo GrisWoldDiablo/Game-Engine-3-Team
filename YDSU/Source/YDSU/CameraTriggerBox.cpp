@@ -2,7 +2,7 @@
 
 
 #include "CameraTriggerBox.h"
-#include "Components/StaticMeshComponent.h"
+//#include "Components/StaticMeshComponent.h"
 #include "Components/ShapeComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Camera/CameraComponent.h"
@@ -11,15 +11,15 @@
 ACameraTriggerBox::ACameraTriggerBox() {
 
 	//Set default Mesh
-	Origin = CreateDefaultSubobject<UStaticMeshComponent>("Origin");
+	Origin = CreateDefaultSubobject<USceneComponent>("Origin");
 	Origin->SetupAttachment(RootComponent);
-	Origin->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//Origin->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// Find the sphere mesh and assign it
-	auto SphereAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+	/*auto SphereAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 	if (SphereAsset.Object != nullptr)
 	{
 		Origin->SetStaticMesh(SphereAsset.Object);
-	}
+	}*/
 	Origin->SetHiddenInGame(true, true);
 
 	// create a camera component
