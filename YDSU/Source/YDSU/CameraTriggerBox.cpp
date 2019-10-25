@@ -2,7 +2,7 @@
 
 
 #include "CameraTriggerBox.h"
-//#include "Components/StaticMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/ShapeComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Camera/CameraComponent.h"
@@ -11,8 +11,8 @@
 ACameraTriggerBox::ACameraTriggerBox() {
 
 	//Set default Mesh
-	Origin = CreateDefaultSubobject<USceneComponent>("Origin");
-	Origin->SetupAttachment(RootComponent);
+	OriginPoint = CreateDefaultSubobject<USceneComponent>("OriginPoint");
+	OriginPoint->SetupAttachment(RootComponent);
 	//Origin->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// Find the sphere mesh and assign it
 	/*auto SphereAsset = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
@@ -20,11 +20,11 @@ ACameraTriggerBox::ACameraTriggerBox() {
 	{
 		Origin->SetStaticMesh(SphereAsset.Object);
 	}*/
-	Origin->SetHiddenInGame(true, true);
+	OriginPoint->SetHiddenInGame(true, true);
 
 	// create a camera component
 	CamView = CreateDefaultSubobject<UCameraComponent>("CamView");
-	CamView->SetupAttachment(Origin);
+	CamView->SetupAttachment(OriginPoint);
 
 	Label = CreateDefaultSubobject<UTextRenderComponent>("Text");
 	Label->SetupAttachment(RootComponent);
@@ -48,6 +48,6 @@ void ACameraTriggerBox::OnConstruction(const FTransform& Transform)
 	FVector CamViewLoc(CameraDistance * -1.0f, 0.0f, 0.0f);
 	CamView->SetRelativeLocation(CamViewLoc);
 	FRotator originRotation(Pitch, Yaw, 0.0f);
-	Origin->SetRelativeRotation(originRotation);
+	OriginPoint->SetRelativeRotation(originRotation);
 	Label->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 }
