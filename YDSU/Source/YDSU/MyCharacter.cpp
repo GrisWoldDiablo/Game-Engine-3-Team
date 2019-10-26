@@ -10,6 +10,7 @@
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 #include "CameraTriggerBox.h"
 #include "Rotator.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -217,5 +218,12 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 		CameraBoom->CameraLagMaxDistance = CamLagDistance;
 		ChangeCamera = false;
 	}
+}
+
+void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "KILL Z Overide");
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	GetWorld()->SetCurrentLevel(GetWorld()->GetCurrentLevel());
 }
 
