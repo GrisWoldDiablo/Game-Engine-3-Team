@@ -222,8 +222,6 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 
 void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "KILL Z Overide");
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "KILL Z Overide");
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-	GetWorld()->SetCurrentLevel(GetWorld()->GetCurrentLevel());
 }
-
