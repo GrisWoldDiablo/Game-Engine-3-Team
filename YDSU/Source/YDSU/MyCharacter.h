@@ -80,5 +80,6 @@ private:
 
 	// To reposition the camera after it made contact with Camera Trigger Box
 	void CameraReposition(float DeltaTime);
-
+	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+	
 };
