@@ -7,7 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Runtime/Engine/Classes/Engine/Engine.h"
+#include "Engine.h"
 #include "CameraTriggerBox.h"
 #include "Rotator.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
@@ -68,7 +68,6 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -81,17 +80,6 @@ void AMyCharacter::Tick(float DeltaTime)
 		CameraReposition(DeltaTime);
 	}
 }
-
-//UFUNCTION(BlueprintCallable) void AMyCharacter::CopyCamValues(AMyCharacter* TheCharacter)
-//{
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamRot: " + TheCharacter->GetName());
-//	/*
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLenght: " + FString::FromInt(CamLenght));
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLagDist: " + FString::FromInt(CamLagDistance));
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, "CamLagSpeed: " + FString::FromInt(CamLagSpeed));*/
-//
-//	return UFUNCTION(BlueprintCallable) void();
-//}
 
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -107,23 +95,17 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
-
 void AMyCharacter::MoveForward(float Value)
 {
 
 	if ((Controller != NULL))
 	{
-		// find out which way is forward
-		
-
-		// get forward vector updated if player moved controller axis
-		//GetDirectionForward(Value, YawRotation);
-
 		// add movement in that direction
 		AddMovementInput(GetDirectionForward(Value), Value);
 	}
 }
 
+// get forward vector updated if player moved controller axis
 FVector AMyCharacter::GetDirectionForward(float Value)
 {
 	const FRotator Rotation = CameraBoom->GetTargetRotation();
@@ -142,21 +124,12 @@ void AMyCharacter::MoveRight(float Value)
 
 	if ((Controller != NULL))
 	{
-		// DEBUG
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, "move Right!");
-
-			// find out which way is right
-		
-
-
-		// get right vector updated if player moved controller axis
-		//GetDirectionRight(Value, YawRotation);
-		// add movement in that direction
+		// add movement
 		AddMovementInput(GetDirectionRight(Value), Value);
-
 	}
 }
 
+// get right vector updated if player moved controller axis
 FVector AMyCharacter::GetDirectionRight(float Value)
 {
 	const FRotator Rotation = CameraBoom->GetTargetRotation();
@@ -178,22 +151,23 @@ void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void AMyCharacter::CamBoxOverLap(AActor* OtherActor)
 {
-	if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
+	auto CamTrigBox = Cast<ACameraTriggerBox>(OtherActor);
+	//if (OtherActor->ActorHasTag(TEXT("CamTrigBox")))
+	if (CamTrigBox != nullptr)
 	{
 		// DEBUG
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Touching Trigger Box");
-		ACameraTriggerBox* CamTrigBox = Cast<ACameraTriggerBox>(OtherActor);
-		if (CamTrigBox != nullptr)
-		{
-			CameraRotator = FRotator(CamTrigBox->Pitch, CamTrigBox->Yaw, 0.0f);
-			CameraLenght = CamTrigBox->CameraDistance;
-			ChangeCamera = true;
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, CameraRotator.ToString());
+		//ACameraTriggerBox* CamTrigBox = Cast<ACameraTriggerBox>(OtherActor);
 
-			//DetachCam = CamTrigBox->DetachCam;
-			CamLagSpeed = CameraBoom->CameraLagSpeed = CamTrigBox->CamLagSpeed;
-			CamLagDistance = CamTrigBox->CamLagDistance;
-		}
+		CameraRotator = FRotator(CamTrigBox->Pitch, CamTrigBox->Yaw, 0.0f);
+		CameraLenght = CamTrigBox->CameraDistance;
+		ChangeCamera = true;
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, CameraRotator.ToString());
+
+		//DetachCam = CamTrigBox->DetachCam;
+		CamLagSpeed = CameraBoom->CameraLagSpeed = CamTrigBox->CamLagSpeed;
+		CamLagDistance = CamTrigBox->CamLagDistance;
+
 	}
 }
 
