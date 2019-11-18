@@ -34,6 +34,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagSpeed;
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool Locked;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float HP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float MaxHP;
+
 private:
 	float AxisValueF;
 	float AxisValueR;
@@ -68,6 +71,7 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Custom")
 		void CamBoxOverLap(AActor* OtherActor);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 
 private:
 	/** Top down camera */
