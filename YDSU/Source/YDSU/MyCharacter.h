@@ -34,8 +34,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") float CamLagSpeed;
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool Locked;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float HP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float MaxHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int HP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int FusionHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int BallHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int PyramidHP;
 
 private:
 	float AxisValueF;
