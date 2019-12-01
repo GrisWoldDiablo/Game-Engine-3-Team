@@ -10,7 +10,8 @@
 #include "Engine.h"
 #include "CameraTriggerBox.h"
 #include "Rotator.h"
-#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -48,6 +49,10 @@ AMyCharacter::AMyCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	//Create the Particle Component
+	ParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle Component"));
+	ParticleComponent->SetupAttachment(RootComponent);
+	ParticleComponent->SetAutoActivate(false);
 
 	// Default camera repositioning values
 	CamSpeed = 2.5f;
