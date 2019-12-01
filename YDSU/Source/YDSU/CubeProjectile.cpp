@@ -38,6 +38,7 @@ ACubeProjectile::ACubeProjectile()
 	ParticleExplosion->SetupAttachment(RootComponent);
 	ParticleExplosion->SetAutoActivate(false);
 
+	// Delegate for particle OnSystemFinished
 	DestroyParticleDelegate.BindUFunction(this, "DestroyParticle");
 }
 
