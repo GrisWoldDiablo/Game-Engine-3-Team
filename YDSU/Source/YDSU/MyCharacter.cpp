@@ -100,6 +100,22 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+void AMyCharacter::ChangeHP(int hp)
+{
+	if(HP < MaxHP) {
+		HP = HP + hp;
+
+	}
+	else {
+		HP = MaxHP;
+	}
+
+	if (HP >= MaxHP) {
+		HP = MaxHP;
+	}
+
+}
+
 void AMyCharacter::MoveForward(float Value)
 {
 
