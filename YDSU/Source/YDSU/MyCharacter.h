@@ -36,9 +36,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool Locked;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int HP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int FusionHP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int BallHP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int PyramidHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int MaxHP;
 
 private:
 	float AxisValueF;
@@ -74,6 +72,8 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Custom")
 		void CamBoxOverLap(AActor* OtherActor);
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION(BlueprintCallable)
+		void ChangeHP(int HpValue);
 
 
 private:
