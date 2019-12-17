@@ -38,7 +38,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int MaxHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") class UParticleSystem* FellOffWorldParticle;
-	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool CanSaveFellOff = true;
 
 private:
 	float AxisValueF;
