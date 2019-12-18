@@ -76,8 +76,8 @@ void AMyCharacter::BeginPlay()
 	GetWorldTimerManager().SetTimer(SetLocationHandle,
 		FTimerDelegate::CreateLambda([this] {
 			SetLocation = true; 
-			GetWorldTimerManager().PauseTimer(SetLocationHandle);
 		}), 1.0f, true);
+	LastFloorPosition = GetActorLocation();
 }
 
 // Called every frame
@@ -90,11 +90,14 @@ void AMyCharacter::Tick(float DeltaTime)
 		CameraReposition(DeltaTime);
 	}
 
-	if (SetLocation)
+	
+	if (SetLocation && !GetCharacterMovement()->IsFalling() &&
+		GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking &&
+		GetController()->IsPlayerController() && CanSaveFellOff)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, GetActorLabel() + TEXT(":") + LastFloorPosition.ToString());
 		LastFloorPosition = GetActorLocation();
 		SetLocation = false;
-		GetWorldTimerManager().UnPauseTimer(SetLocationHandle);
 	}
 }
 
