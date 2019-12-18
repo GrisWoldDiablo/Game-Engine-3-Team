@@ -95,7 +95,7 @@ void AMyCharacter::Tick(float DeltaTime)
 		GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking &&
 		GetController()->IsPlayerController() && CanSaveFellOff)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, GetActorLabel() + TEXT(":") + LastFloorPosition.ToString());
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, GetActorLabel() + TEXT(":") + LastFloorPosition.ToString());
 		LastFloorPosition = GetActorLocation();
 		SetLocation = false;
 	}
