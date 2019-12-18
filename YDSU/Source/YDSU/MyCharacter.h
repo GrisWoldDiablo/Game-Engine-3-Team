@@ -37,6 +37,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int MaxHP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") class UParticleSystem* FellOffWorldParticle;
+	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool CanSaveFellOff = true;
 
 private:
 	float AxisValueF;
@@ -44,6 +46,11 @@ private:
 	FVector DirectionForward;
 	FVector DirectionRight;
 	bool ChangeCamera;
+	
+	// Fell of world
+	FVector LastFloorPosition;
+	bool SetLocation = true;
+	FTimerHandle SetLocationHandle;
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,6 +81,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UFUNCTION(BlueprintCallable)
 		void ChangeHP(int HpValue);
+
+	void FellOfWorld();
 
 
 private:

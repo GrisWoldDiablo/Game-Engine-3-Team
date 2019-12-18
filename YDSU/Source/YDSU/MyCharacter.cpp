@@ -12,6 +12,7 @@
 #include "Rotator.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "TimerManager.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -66,13 +67,17 @@ AMyCharacter::AMyCharacter()
 	CameraBoom->CameraLagSpeed = 1.0f;
 	Locked = false;
 
-
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	GetWorldTimerManager().SetTimer(SetLocationHandle,
+		FTimerDelegate::CreateLambda([this] {
+			SetLocation = true; 
+		}), 1.0f, true);
+	LastFloorPosition = GetActorLocation();
 }
 
 // Called every frame
@@ -83,6 +88,16 @@ void AMyCharacter::Tick(float DeltaTime)
 	if (ChangeCamera)
 	{
 		CameraReposition(DeltaTime);
+	}
+
+	
+	if (SetLocation && !GetCharacterMovement()->IsFalling() &&
+		GetCharacterMovement()->MovementMode == EMovementMode::MOVE_Walking &&
+		GetController()->IsPlayerController() && CanSaveFellOff)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, GetActorLabel() + TEXT(":") + LastFloorPosition.ToString());
+		LastFloorPosition = GetActorLocation();
+		SetLocation = false;
 	}
 }
 
@@ -114,6 +129,16 @@ void AMyCharacter::ChangeHP(int hp)
 		HP = MaxHP;
 	}
 
+}
+
+void AMyCharacter::FellOfWorld()
+{
+	SetActorLocation(LastFloorPosition);
+	GetCapsuleComponent()->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+	GetCapsuleComponent()->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	if (FellOffWorldParticle != nullptr) {
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FellOffWorldParticle, FTransform(LastFloorPosition));
+	}
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -218,5 +243,6 @@ void AMyCharacter::CameraReposition(float DeltaTime)
 void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "KILL Z Overide");
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	FellOfWorld();
 }
