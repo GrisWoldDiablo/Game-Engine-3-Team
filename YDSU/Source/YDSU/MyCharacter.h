@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MyEnemyCharacter.h"
+#include "MyGameInstanceCPP.h"
 #include "MyCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -38,7 +40,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int HP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int MaxHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") class UParticleSystem* FellOffWorldParticle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") int enemyIndex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") bool enemyIsTargeted;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") float distance;
+	UPROPERTY(EditAnywhere)	FTimerHandle DistanceTimer;
 	UPROPERTY(BlueprintReadWrite, Category = "Variables") bool CanSaveFellOff = true;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables") UMyGameInstanceCPP* MyGI;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Variables") TArray<AMyEnemyCharacter*> enemies;
 
 private:
 	float AxisValueF;
@@ -51,6 +61,8 @@ private:
 	FVector LastFloorPosition;
 	bool SetLocation = true;
 	FTimerHandle SetLocationHandle;
+
+	int nbOfEnemies = -1;
 
 protected:
 	// Called when the game starts or when spawned
@@ -85,6 +97,7 @@ public:
 	void FellOfWorld();
 
 
+
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -97,5 +110,17 @@ private:
 	// To reposition the camera after it made contact with Camera Trigger Box
 	void CameraReposition(float DeltaTime);
 	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+
+	UFUNCTION()
+		void TargetEnemy();
+
+	UFUNCTION()
+		void ChangeEnemyUp();
+
+	UFUNCTION()
+		void ChangeEnemyDown();
+
+	UFUNCTION()
+		void CheckingDistanceTimer();
 	
 };

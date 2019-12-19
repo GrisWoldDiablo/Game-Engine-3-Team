@@ -16,4 +16,7 @@ class YDSU_API UMyGameInstanceCPP : public UGameInstance
 	
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) class AMyCharacter* CurrentCharacter;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) class AMyEnemyCharacter* EnemyCurrentlyTargeted;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) TArray<AMyEnemyCharacter*> EnemiesList;
 };
