@@ -47,4 +47,8 @@ public:
 	UFUNCTION() void TimelineTick(float tickValue);
 	UFUNCTION() void TimelineFinished();
 	void PlayTimeline();
+
+	// There to unregister the timeline.
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 };

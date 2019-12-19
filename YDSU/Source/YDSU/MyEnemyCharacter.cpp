@@ -81,7 +81,7 @@ void AMyEnemyCharacter::OnConstruction(const FTransform& Transform)
 UFUNCTION(BlueprintCallable) void AMyEnemyCharacter::StartFinisherCamera()
 {
 	auto OutActors = TArray<AActor*>();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMyCharacter::StaticClass(), OutActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OutActors);
 	for (auto Actor : OutActors) {
 		Actor->CustomTimeDilation = 0.0f;
 	}
@@ -112,7 +112,7 @@ UFUNCTION() void AMyEnemyCharacter::ResetFinisherCamera()
 UFUNCTION() void AMyEnemyCharacter::RunResetFinisherCamera()
 {
 	auto OutActors = TArray<AActor*>();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMyCharacter::StaticClass(), OutActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OutActors);
 	for (auto Actor : OutActors) {
 		Actor->CustomTimeDilation = 1.0f;
 	}
@@ -137,5 +137,10 @@ void AMyEnemyCharacter::PlayTimeline()
 	{
 		FinisherCameraTimeline->PlayFromStart();
 	}
+}
+
+void AMyEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	FinisherCameraTimeline->UnregisterComponent();
 }
 
