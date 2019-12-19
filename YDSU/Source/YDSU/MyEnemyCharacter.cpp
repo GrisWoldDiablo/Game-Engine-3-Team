@@ -139,3 +139,8 @@ void AMyEnemyCharacter::PlayTimeline()
 	}
 }
 
+void AMyEnemyCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	FinisherCameraTimeline->UnregisterComponent();
+}
+
