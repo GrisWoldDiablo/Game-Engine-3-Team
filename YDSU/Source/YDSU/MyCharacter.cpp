@@ -12,6 +12,8 @@
 #include "Rotator.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "MyEnemyCharacter.h"
+#include "MyGameInstanceCPP.h"
 #include "TimerManager.h"
 
 // Sets default values
@@ -78,6 +80,7 @@ void AMyCharacter::BeginPlay()
 			SetLocation = true; 
 		}), 1.0f, true);
 	LastFloorPosition = GetActorLocation();
+	enemyIndex = 0;
 }
 
 // Called every frame
@@ -112,7 +115,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
+	PlayerInputComponent->BindAction("Target", IE_Pressed, this, &AMyCharacter::TargetEnemy);
 
+	PlayerInputComponent->BindAction("Up", IE_Pressed, this, &AMyCharacter::ChangeEnemyUp);
+	PlayerInputComponent->BindAction("Down", IE_Pressed, this, &AMyCharacter::ChangeEnemyDown);
 }
 
 void AMyCharacter::ChangeHP(int hp)
@@ -245,4 +251,151 @@ void AMyCharacter::FellOutOfWorld(const UDamageType& dmgType)
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "KILL Z Overide");
 	//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	FellOfWorld();
+}
+
+void AMyCharacter::TargetEnemy()
+{
+	
+	auto MyGI = Cast<UMyGameInstanceCPP>(GetGameInstance());
+	enemyIndex = 0;
+	nbOfEnemies = -1;
+	
+	FVector currentLoc = GetActorLocation();
+	TArray<TEnumAsByte<EObjectTypeQuery>> query;
+	TArray<AActor*> ignore;
+	TArray<AActor*> out;
+	UKismetSystemLibrary::SphereOverlapActors(this, currentLoc, 500.0f, query, AMyEnemyCharacter::StaticClass(), ignore, out);
+
+	//FString result = FString::Printf(TEXT("Hit %d actors."), out.Num());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result);
+
+	if (out.IsValidIndex(0) && enemyIsTargeted == false) {
+		
+		auto initialTarget = Cast<AMyEnemyCharacter>(out[0]);
+
+		if (initialTarget != nullptr) {
+
+			if (MyGI != nullptr) {
+				enemyIsTargeted = true;
+				MyGI->EnemiesList.Empty();
+				MyGI->EnemyCurrentlyTargeted = initialTarget;
+				float initDistance = (FVector::Dist(currentLoc, initialTarget->GetActorLocation()));
+				GetWorld()->GetTimerManager().SetTimer(DistanceTimer,this, &AMyCharacter::CheckingDistanceTimer, 0.2f, true);
+				for (auto actor : out)
+				{
+					auto enemy = Cast<AMyEnemyCharacter>(actor);
+
+					if (enemy != nullptr)
+					{
+						//FString result3 = FString::Printf(TEXT(" Adding found enemies"));
+						//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result3);
+						MyGI->EnemiesList.Add(enemy);
+						nbOfEnemies++;
+						distance = (FVector::Dist(currentLoc, enemy->GetActorLocation()));
+
+
+						if (distance < initDistance) {
+							MyGI->EnemyCurrentlyTargeted = enemy;
+						}
+						else {
+
+						}
+
+					}
+				}
+
+				for (auto actor : MyGI->EnemiesList) {
+					if (actor == MyGI->EnemyCurrentlyTargeted) {
+						break;
+					}
+					else {
+						enemyIndex++;
+					}
+				}
+			}
+		}
+	}
+	else {
+		GetWorldTimerManager().ClearTimer(DistanceTimer);
+		enemyIsTargeted = false;
+	}
+	
+
+}
+
+void AMyCharacter::ChangeEnemyUp()
+{
+	auto MyGI = Cast<UMyGameInstanceCPP>(GetGameInstance());
+	if (MyGI != nullptr && enemyIsTargeted == true) {
+		if (MyGI->EnemiesList.IsValidIndex(0)) {
+			if (nbOfEnemies > enemyIndex) {
+				enemyIndex++;
+				if (MyGI->EnemiesList[enemyIndex] != nullptr) {
+					MyGI->EnemyCurrentlyTargeted = MyGI->EnemiesList[enemyIndex];
+				}
+				//FString result1 = FString::Printf(TEXT("%d number of NUM function"), MyGI->EnemiesList.Num());
+				//FString result2 = FString::Printf(TEXT("%d number of NBOFENEMIES"), nbOfEnemies);
+				//FString result3 = FString::Printf(TEXT("%d ARRAY INDEX"), enemyIndex);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result1);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result2);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result3);
+			}
+			else {
+				enemyIndex = 0;
+				if (MyGI->EnemiesList[enemyIndex] != nullptr) {
+					MyGI->EnemyCurrentlyTargeted = MyGI->EnemiesList[enemyIndex];
+				}
+			}
+
+		}
+		else {
+			//FString result = FString::Printf(TEXT("Not valid"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result);
+			enemyIsTargeted = false;
+			GetWorldTimerManager().ClearTimer(DistanceTimer);
+
+		}
+	}
+}
+
+void AMyCharacter::ChangeEnemyDown()
+{
+	auto MyGI = Cast<UMyGameInstanceCPP>(GetGameInstance());
+	if (MyGI != nullptr && enemyIsTargeted == true) {
+		if (MyGI->EnemiesList.IsValidIndex(0)) {
+			if (enemyIndex <= 0) {
+				enemyIndex = nbOfEnemies;
+				if (MyGI->EnemiesList[enemyIndex] != nullptr) {
+					MyGI->EnemyCurrentlyTargeted = MyGI->EnemiesList[enemyIndex];
+				}
+			}
+			else {
+				enemyIndex--;
+				if (MyGI->EnemiesList[enemyIndex] != nullptr) {
+					MyGI->EnemyCurrentlyTargeted = MyGI->EnemiesList[enemyIndex];
+				}
+			}
+		}
+		else {
+			//FString result = FString::Printf(TEXT("Not valid"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, result);
+			enemyIsTargeted = false;
+			GetWorldTimerManager().ClearTimer(DistanceTimer);
+		}
+	}
+}
+
+void AMyCharacter::CheckingDistanceTimer()
+{
+	//FString result1 = FString::Printf(TEXT("hi"));
+	//GEngine->AddOnScreenDebugMessage(-1, 0.65f, FColor::Blue, result1);
+	auto MyGI = Cast<UMyGameInstanceCPP>(GetGameInstance());
+	if (MyGI->EnemyCurrentlyTargeted != nullptr) {
+		distance = (FVector::Dist(GetActorLocation(), MyGI->EnemyCurrentlyTargeted->GetActorLocation()));
+
+		if (distance > 850.0f) {
+			enemyIsTargeted = false;
+			GetWorldTimerManager().ClearTimer(DistanceTimer);
+		}
+	}
 }
